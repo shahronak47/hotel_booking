@@ -1,0 +1,19 @@
+---
+title: "Hotel Booking"
+output: html_document
+---
+
+```{r, message=FALSE, include=FALSE}
+#Include libraries
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+hotel_data <- read_csv('hotel_bookings.csv')
+hotel_data
+```
+
+```{r}
+#Top countries for visitors - year in dropdown with total for all years. 
+```
