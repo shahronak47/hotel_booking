@@ -23,8 +23,61 @@ mean(hotel_data$is_canceled)
 
 #How early (in days) on average people book 
 mean(hotel_data$lead_time)
+
+#Range of dataset.
+
+unique(with(hotel_data, paste(arrival_date_year, arrival_date_month)))
 ```
 
 ```{r}
-#Top countries for visitors - year in dropdown with total for all years. 
+#plot for specific month
+hotel_data %>%
+  dplyr::filter(arrival_date_month == 'July', is_canceled == 0) %>%
+  group_by(country, hotel) %>%
+  summarise(total_people = sum(adults + children + babies)) %>%
+  mutate(total = sum(total_people)) %>%
+  ungroup %>%
+  arrange(desc(total)) %>%
+  dplyr::filter(country %in% head(unique(country), 10)) %>%
+  ggplot() + aes(reorder(country, -total_people), total_people, fill = hotel) + 
+  geom_col(position = 'dodge') + 
+  labs(title = "Number of visitors P*",
+       x = 'Country', 
+       y = 'Count',
+       caption = '*Visitors include adults and small childrens of all age') +
+  scale_fill_manual(values = c('red', 'blue'), name = 'Type of Hotel') + 
+  theme_bw() + 
+  theme(legend.position=c(.9,.75))
+```
+
+
+```{r}
+hotel_data %>%
+  dplyr::filter(is_canceled == 0) %>%
+  group_by(hotel) %>%
+  summarise(total_visitors = sum(adults + children + babies, na.rm = TRUE)) %>%
+  arrange(desc(total_visitors))
+```
+
+```{r}
+hotel_data %>%
+  dplyr::filter(is_canceled == 0) %>%
+  group_by(hotel, arrival_date_month) %>%
+  summarise(total_visitors = sum(adults + children + babies, na.rm = TRUE)) %>%
+  mutate(arrival_date_month = factor(arrival_date_month, month.name)) %>%
+  ggplot(aes(arrival_date_month, total_visitors, color = hotel, group = hotel)) + 
+  geom_line() + 
+   labs(title = "Number of visitors* by month",
+       x = 'Month', 
+       y = 'Count',
+       caption = '*Visitors include adults and small childrens of all age') +
+  scale_color_manual(values = c('red', 'blue'), name = 'Type of Hotel') + 
+  theme_bw() + 
+  theme(legend.position=c(.9,.75))
+```
+
+```{r}
+#Percentage of people who come with kids. 
+mean(hotel_data$children > 0 | hotel_data$babies > 0, na.rm = TRUE) * 100
+```
 ```
