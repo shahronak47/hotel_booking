@@ -80,4 +80,33 @@ hotel_data %>%
 #Percentage of people who come with kids. 
 mean(hotel_data$children > 0 | hotel_data$babies > 0, na.rm = TRUE) * 100
 ```
+
+```{r}
+#Average length of stay based on number of children
+hotel_data %>%
+  mutate(total_child = children + babies, 
+         total_time = stays_in_weekend_nights + stays_in_week_nights) %>%
+  group_by(total_child) %>%
+  summarise(average_stay = round(mean(total_time, na.rm = TRUE), 2)) %>%
+  na.omit()
+```
+
+
+```{r}
+hotel_data %>%
+  mutate(total = adults + children + babies) %>%
+  group_by(country) %>%
+  summarise(total = sum(total, na.rm = TRUE)) %>%
+  slice_max(total, n = 6) %>%
+  left_join(hotel_data, by = 'country') %>%
+  count(country, market_segment) %>%
+  ggplot() + aes(market_segment, n) + 
+  geom_col() + facet_wrap(~country) + 
+  labs(x = 'Market Segment', y = 'Total number of bookings', 
+       title = 'Which marketing segment is used by top 5 countries ?') + 
+  theme_bw()
+```
+
+```{r}
+#Include animation
 ```
