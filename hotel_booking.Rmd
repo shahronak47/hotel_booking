@@ -11,7 +11,18 @@ library(lubridate)
 
 ```{r}
 hotel_data <- read_csv('hotel_bookings.csv')
-hotel_data
+head(hotel_data)
+```
+
+```{r}
+#Types of hotel
+unique(hotel_data$hotel)
+
+#Percentage of cancellation
+mean(hotel_data$is_canceled)
+
+#How early (in days) on average people book 
+mean(hotel_data$lead_time)
 ```
 
 ```{r}
