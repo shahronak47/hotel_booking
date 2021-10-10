@@ -1,6 +1,9 @@
 library(tidyverse)
 library(plotly)
 library(DT)
+library(gganimate)
+library(gifski)
+library(png)
 
 server <- function(input, output) {
   #hotel_data <- read_csv('hotel_bookings.csv')
@@ -87,4 +90,37 @@ server <- function(input, output) {
            title = 'Which marketing segment is used by top 5 countries ?') + 
       theme_bw()
   })
+  
+  output$home_plot <- renderPlotly({
+    hotel_data %>%
+      group_by(country) %>%
+      summarise(total = sum(adults + children + babies, na.rm = TRUE))  %>%
+      filter(total > 1000) -> tmp
+    
+    plot_ly(tmp, labels = ~country, values = ~total, type = 'pie') %>%
+      layout(legend = list(orientation = "h", xanchor = "center",  x = 0.1 ,y = 1.2))  
+  })
+  
+  output$animation <- renderImage({
+    outfile <- tempfile(fileext='.gif')
+    
+    hotel_data %>%
+      group_by(arrival_date_week_number) %>%
+      summarise(total_tourist = sum(adults + children + babies, na.rm = TRUE)) %>%
+      ggplot(aes(arrival_date_week_number, total_tourist)) + 
+      geom_line() + 
+      theme_bw() + 
+      labs(x = 'Week Number', 
+           y = 'Number of tourists', 
+           title = 'Arrival of tourists by week')
+      transition_reveal(arrival_date_week_number) -> p
+    
+      anim_save("outfile.gif", animate(p))
+      list(src = "outfile.gif",
+           contentType = 'image/gif'
+           # width = 400,
+           # height = 300,
+           # alt = "This is alternate text"
+      )
+  }, deleteFile = TRUE)
 }

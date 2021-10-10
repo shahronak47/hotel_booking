@@ -2,6 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(dashboardthemes)
 library(shinycssloaders)
+library(plotly)
 
 #hotel_data <- readr::read_csv('hotel_bookings.csv')
 #Get unique month-year combinations
@@ -39,8 +40,14 @@ ui <- dashboardPage(title = 'Hotel Booking',
         valueBox(v1, 'Total data points', icon = icon('globe'), width = 3), 
         valueBox(v2, 'Range of data', icon = icon('calendar'), width = 3, color = 'purple'), 
         valueBox(v3, 'Cancellation percentage', icon = icon('times'), width = 3, color = 'red'), 
-        valueBox(v4, 'Visitors with kids', icon = icon('baby'), width = 3, color = 'green')
-      ), 
+        valueBox(v4, 'Visitors with kids', icon = icon('baby'), width = 3, color = 'green'), 
+        br(), br(),br(), br(), br(), br(),br(), br(),
+        h3('Visitors breakdown by country'),
+        fluidRow(
+          column(6, withSpinner(plotlyOutput('home_plot', height = '110%'), type = 5)), 
+          column(6, img(src="file.gif"), type = 5)
+          )
+        ), 
       #Tab2
       tabItem(tabName = "findings1",
         h2("Monthly Visits"),
@@ -71,7 +78,7 @@ ui <- dashboardPage(title = 'Hotel Booking',
       tabItem(tabName = "findings2",
               h3('Marketing segment preference by visitors'),
               br(), br(),
-              plotOutput('plot3'),
+              withSpinner(plotOutput('plot3'),type = 5),
               HTML('<br/> <br/>
             <ul> Observations - 
               <br/>
@@ -83,8 +90,8 @@ ui <- dashboardPage(title = 'Hotel Booking',
               br(), br(),
               h3('Does number of children affect the length of stay?'),
               br(), br(),
-              fluidRow(column(6, plotOutput('average_stay_plot', height = '300px')),
-                       column(6, DT::dataTableOutput('average_stay', height = '300px'))),
+              fluidRow(column(6, withSpinner(plotOutput('average_stay_plot', height = '300px'), type = 5)),
+                       column(6, withSpinner(DT::dataTableOutput('average_stay', height = '300px'), type = 5))),
               HTML('<br/> <br/>
             <ul> Observations - 
               <br/>

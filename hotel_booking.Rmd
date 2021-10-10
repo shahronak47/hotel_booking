@@ -104,10 +104,33 @@ hotel_data %>%
   geom_col() + facet_wrap(~country) + 
   labs(x = 'Market Segment', y = 'Total number of bookings', 
        title = 'Which marketing segment is used by top 5 countries ?') + 
-  theme_bw()
+  theme_minimal()
+```
+
+```{r}
+#Pie chart country wise tourists first page. 
+
+hotel_data %>%
+  group_by(country) %>%
+  summarise(total = sum(adults + children + babies, na.rm = TRUE))  %>%
+  filter(total > 100) -> tmp
+
+
+plot_ly(tmp, labels = ~country, values = ~total, type = 'pie')
 ```
 
 ```{r}
 #Include animation - Influx of tourist based on week number of the year
-#Pie chart country wise tourists first page. 
+hotel_data %>%
+  group_by(arrival_date_week_number) %>%
+  summarise(total_tourist = sum(adults + children + babies, na.rm = TRUE)) %>%
+  ggplot(aes(arrival_date_week_number, total_tourist)) + 
+  geom_line() + 
+  theme_bw() + 
+   labs(x = 'Week Number', 
+           y = 'Number of tourists', 
+           title = 'Arrival of tourists by week') + 
+  transition_reveal(arrival_date_week_number) -> p
+
+anim_save("file.gif", p)
 ```
