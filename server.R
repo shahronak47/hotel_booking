@@ -44,7 +44,7 @@ server <- function(input, output) {
   })
   
   
-  output$average_stay <- renderDataTable({
+  output$average_stay <- DT::renderDataTable({
     hotel_data %>%
       mutate(`Number of children` = children + babies, 
              total_time = stays_in_weekend_nights + stays_in_week_nights) %>%
@@ -82,7 +82,7 @@ server <- function(input, output) {
       group_by(country) %>%
       mutate(n = prop.table(n) * 100) %>%
       ggplot() + aes(market_segment, n) + 
-      geom_col() + facet_wrap(~country) + 
+      geom_col() + facet_wrap(~country, scales = 'free_x') + 
       labs(x = 'Market Segment', y = 'Percentage of bookings', 
            title = 'Which marketing segment is used by top 5 countries ?') + 
       theme_bw()

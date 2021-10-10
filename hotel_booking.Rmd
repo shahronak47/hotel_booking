@@ -108,5 +108,6 @@ hotel_data %>%
 ```
 
 ```{r}
-#Include animation
+#Include animation - Influx of tourist based on week number of the year
+#Pie chart country wise tourists first page. 
 ```

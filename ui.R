@@ -69,10 +69,29 @@ ui <- dashboardPage(title = 'Hotel Booking',
            '),
       ), 
       tabItem(tabName = "findings2",
+              h3('Marketing segment preference by visitors'),
+              br(), br(),
               plotOutput('plot3'),
+              HTML('<br/> <br/>
+            <ul> Observations - 
+              <br/>
+              <li> This plot shows marketting segments preferred for booking by top 6 countries. The plot is in percentage. </li>
+              <li> One interesting observation, in most of the countries online travel agents are the preferred channel (constituting around 50% of all bookings) however, the biggest country (Portugal) uses groups booking as preffered method. They have online and offline travel agents at the same ratio more or less.</li>
+              <li> Focussing on online travel agents is required but for Portugal we might need to prepare a different startegy as it is an important market. </li>
+            </ul>  
+           '),
+              br(), br(),
+              h3('Does number of children affect the length of stay?'),
               br(), br(),
               fluidRow(column(6, plotOutput('average_stay_plot', height = '300px')),
-                       column(6, dataTableOutput('average_stay', height = '300px')))
+                       column(6, DT::dataTableOutput('average_stay', height = '300px'))),
+              HTML('<br/> <br/>
+            <ul> Observations - 
+              <br/>
+              <li> There is no impact of children on length of stay. The average length of stay remains the same (in the same range) irrespective if you are visiting with or without children. We can see the average length of stay to be 3-4 days. </li>
+              <li> Bringing 9-10 children is very rare as we can see there are only 3 instances of it and it can be considred as an outlier. </li>
+            </ul>  
+           ')
       )
     )
   )
