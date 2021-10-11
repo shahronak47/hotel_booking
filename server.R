@@ -2,10 +2,8 @@ library(tidyverse)
 library(plotly)
 library(DT)
 library(gganimate)
-library(gifski)
-library(png)
 
-
+#Create a look up table to get complete country name from code. 
 lookup <- data.frame(country = c('PRT', 'ESP', 'FRA', 'GBR', 'ITA', 'DEU', 'BRA', 'NLD', 'IRL', 
                                  'BEL', 'AUT', 'CHE', 'CHN', 'NOR', 'POL', 'RUS', 'SWE', 'USA', 'ROU', 'ISR'),
                      country_name = c('Portugal', 'Spain', 'France', 'Great Britain', 'Italy', 'Germany', 
@@ -16,17 +14,20 @@ hotel_data <- read_csv('hotel_bookings.csv')
 #Join to get complete country names
 hotel_data <- hotel_data %>% left_join(lookup, by = 'country')
 
+#define server function
 server <- function(input, output) {
-  
-  
+  #top 10 countries to visit
   output$top10_monthly_tourist <- renderPlot({
     hotel_data %>%
+      #select rows for selected month and whose booking is not cancelled. 
       dplyr::filter(arrival_date_month == input$month, is_canceled == 0) %>%
-      group_by(country, hotel, country_name) %>%
+      group_by(country, country_name, hotel) %>%
+      #Add adults, children and babies as total visitos
       summarise(total_people = sum(adults + children + babies)) %>%
       mutate(total = sum(total_people)) %>%
       ungroup %>%
       arrange(desc(total)) %>%
+      #Select top 10 countries
       dplyr::filter(country %in% head(unique(country), 10)) %>%
       mutate(country_name = factor(country_name, unique(country_name))) %>%
       ggplot() + aes(country_name, total_people, fill = hotel) + 
@@ -37,6 +38,7 @@ server <- function(input, output) {
            caption = '*Visitors include adults and small childrens of all age') +
       scale_fill_manual(values = c('tomato1', 'royalblue2'), name = 'Type of Hotel') + 
       theme_bw() + 
+      #Take legend inside plot
       theme(legend.position=c(.9,.75))
   })
   
@@ -92,11 +94,11 @@ server <- function(input, output) {
       summarise(total = sum(total, na.rm = TRUE)) %>%
       slice_max(total, n = 6) %>%
       left_join(hotel_data, by = 'country') %>%
-      count(country, market_segment) %>%
-      group_by(country) %>%
+      count(country_name, market_segment) %>%
+      group_by(country_name) %>%
       mutate(n = prop.table(n) * 100) %>%
       ggplot() + aes(market_segment, n) + 
-      geom_col(fill = "steelblue4") + facet_wrap(~country, scales = 'free_x') + 
+      geom_col(fill = "steelblue4") + facet_wrap(~country_name, scales = 'free_x') + 
       labs(x = 'Market Segment', y = 'Percentage of bookings', 
            title = 'Which marketing segment is used by top 5 countries ?') + 
       theme_bw()
@@ -112,26 +114,4 @@ server <- function(input, output) {
       layout(legend = list(orientation = "h", xanchor = "center",  x = 0.1 ,y = 1.6))  
   })
   
-  output$animation <- renderImage({
-    outfile <- tempfile(fileext='.gif')
-    
-    hotel_data %>%
-      group_by(arrival_date_week_number) %>%
-      summarise(total_tourist = sum(adults + children + babies, na.rm = TRUE)) %>%
-      ggplot(aes(arrival_date_week_number, total_tourist)) + 
-      geom_line() + 
-      theme_bw() + 
-      labs(x = 'Week Number', 
-           y = 'Number of tourists', 
-           title = 'Arrival of tourists by week')
-      transition_reveal(arrival_date_week_number) -> p
-    
-      anim_save("outfile.gif", animate(p))
-      list(src = "outfile.gif",
-           contentType = 'image/gif'
-           # width = 400,
-           # height = 300,
-           # alt = "This is alternate text"
-      )
-  }, deleteFile = TRUE)
 }

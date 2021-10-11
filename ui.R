@@ -15,7 +15,6 @@ v3 <- paste0(round(mean(hotel_data$is_canceled) * 100, 2), '%')
 v4 <- paste0(round(mean(hotel_data$children > 0 | hotel_data$babies > 0, na.rm = TRUE) * 100, 2), '%')
 
 ui <- dashboardPage(title = 'Hotel Booking',
-                    
   dashboardHeader(title = shinyDashboardLogo(
                     theme = "flat_red",
                     mainText = h3("Hotel Booking"),
@@ -46,13 +45,20 @@ ui <- dashboardPage(title = 'Hotel Booking',
         fluidRow(
           column(6, withSpinner(plotlyOutput('home_plot', height = '110%'), type = 5)), 
           column(6, img(src="file.gif"), type = 5)
-          )
+          ), 
+        HTML('<br/> <br/>
+            <ul> Observations - 
+              <br/>
+              <li> Quite clearly Portugal has the highest percentage of visitors as they dominate the pie chart with over 40%. Next is followed by Great Britain and Spain</li>
+              <li> The animation on the right shows arrival of tourists on weekly basis. We can see that the animation rises on the peak at around 33-35th week.</li>
+            </ul>  
+           ')
         ), 
       #Tab2
       tabItem(tabName = "findings1",
         h2("Monthly Visits"),
         br(),
-        h3('Top 10 countries to visit'),
+        h3('Top 10 countries as visitor'),
         selectInput('month', 'Select Month : ', month.name),
         br(),
         withSpinner(plotOutput('top10_monthly_tourist'), type = 5),
