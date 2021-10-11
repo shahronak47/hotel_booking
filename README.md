@@ -2,6 +2,8 @@
 
 This repository aims at performing an exploratory data analysis (EDA) on the hotel booking demand dataset available on [Kaggle](https://www.kaggle.com/jessemostipak/hotel-booking-demand) . This has been developed as a shiny app which can be found [here](https://shahronak.shinyapps.io/hotel_booking/). 
 
+EDA has been performed assuming that a company wants to start their own hotel chain and has contacted a Data Analyst/Scientist to provide actionable insights into the data which will be helpful while launching their own hotel chain. 
+
 Below is brief description of the files in the repository. 
 
 1. ui.R - User Interface (UI) code for shiny application. 
