@@ -4,7 +4,7 @@ library(dashboardthemes)
 library(shinycssloaders)
 library(plotly)
 
-#hotel_data <- readr::read_csv('hotel_bookings.csv')
+hotel_data <- readr::read_csv('hotel_bookings.csv')
 #Get unique month-year combinations
 month_data <- unique(with(hotel_data, paste(arrival_date_month, arrival_date_year)))
 

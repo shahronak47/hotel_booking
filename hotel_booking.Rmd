@@ -104,7 +104,7 @@ hotel_data %>%
   geom_col() + facet_wrap(~country) + 
   labs(x = 'Market Segment', y = 'Total number of bookings', 
        title = 'Which marketing segment is used by top 5 countries ?') + 
-  theme_minimal()
+  theme_void()
 ```
 
 ```{r}
